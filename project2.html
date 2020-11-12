@@ -9,9 +9,9 @@
         uniform mat4 mProjection;
 
         attribute vec4 vPosition;
-        attribute vec3 vNormal;
+        varying vec4 vNormal;
 
-        varying vec3 fNormal;
+        varying vec4 fNormal;
 
         void main() {
             gl_Position = mProjection * mModelView * vPosition;
@@ -22,11 +22,10 @@
     <script id="default-fragment" type="x-shader/x-fragment">
         precision highp float;
 
-        varying vec3 fNormal;
+        varying vec4 fNormal;
 
         void main() {
-            gl_FragColor = vec4(fNormal, 1.0);
-
+            gl_FragColor = abs(fNormal);
         }
     </script>
     

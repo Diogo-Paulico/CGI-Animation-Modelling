@@ -6,8 +6,14 @@ var aspect;
 
 var mProjectionLoc, mModelViewLoc;
 
+var projection;
+
 var matrixStack = [];
 var modelView;
+
+var at = [0, 0, 0];
+var eye = [1, 1, 1];
+var up = [0, 1, 0];
 
 // Stack related operations
 function pushMatrix() {
@@ -53,6 +59,10 @@ window.onresize = function () {
 }
 
 window.onload = function() {
+
+
+    
+
     canvas = document.getElementById('gl-canvas');
 
     gl = WebGLUtils.setupWebGL(document.getElementById('gl-canvas'));
@@ -69,23 +79,49 @@ window.onload = function() {
     mModelViewLoc = gl.getUniformLocation(program, "mModelView");
     mProjectionLoc = gl.getUniformLocation(program, "mProjection");
 
-    sphereInit(gl);
+    cubeInit(gl);
 
     render();
 }
 
+function update_ctm()
+{
+    
+    let tx = 0;
+    let ty = 0;
+    let tz = 1;
+    let rx = 10;
+    let ry = 10;
+    let rz = 100;
+    let sx = 1;
+    let sy = 1;
+    let sz = 3;
 
+    let m = mult(translate([tx, ty, tz]), 
+          mult(rotateZ(rz), 
+          mult(rotateY(ry),
+          mult(rotateX(rx),
+          scalem([sx,sy,sz])))));
+
+          return m;
+}
 
 function render() 
 {
-    requestAnimationFrame(render);
-    
+    projection = ortho(-2,2,-2,2,10,-10);
+    modelView = lookAt(eye, at, up);
+ 
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-    var projection = ortho(-VP_DISTANCE*aspect,VP_DISTANCE*aspect, -VP_DISTANCE, VP_DISTANCE,-3*VP_DISTANCE,3*VP_DISTANCE);
     
     gl.uniformMatrix4fv(mProjectionLoc, false, flatten(projection));
 
-    modelView = lookAt([0,VP_DISTANCE,VP_DISTANCE], [0,0,0], [0,1,0]);
+    let m = mult(modelView,update_ctm());
+    gl.uniformMatrix4fv(mModelViewLoc, false, flatten(m));
+
+    
+    cubeDrawWireFrame(gl,program);
+
+    requestAnimationFrame(render);
+
 
 }
