@@ -144,7 +144,7 @@ function frontLeftWheel(){
     multTranslation([0,0,-0.6]);
     multRotationY(TURN); // turns wheel it seems
     multRotationX(90);
-    multScale([0.3,0.3,0.3]);
+    multScale([0.3,0.3,0.3]); // torus_Radius * scale
     wheel();
 }
 
