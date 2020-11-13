@@ -14,11 +14,15 @@ let wireFrame = true;
 var at = [0, 0, 0];
 var eye = [1, 1, 1];
 var up = [0, 1, 0];
+var atUP = [0,0,0];
+var eyeUP =[0,1,0];
+var upUP = [0,0,-1];
 
 
 const PURPLE = vec4(0.6,0.5,1.0, 1.0);
 const RED = vec4(1.0,0.0,0.0, 1.0);
 const GREEN = vec4(0.0, 1.0, 0.0, 1.0);
+const BLUE = vec4(0.0, 0.0, 1.0, 1.0);
 
 // Stack related operations
 function pushMatrix() {
@@ -93,6 +97,7 @@ window.onload = function() {
 
     cubeInit(gl);
     cylinderInit(gl);
+    torusInit(gl);
     render();
 }
 
@@ -125,13 +130,39 @@ function front_axis(){
 
     multRotationY(90);
     multRotationZ(90);
-    multScale([1/15, 1.1, 1/15]);
+    multScale([1/15, 1.15, 1/15]);
     gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
     gl.uniform4fv(colorLoc, flatten(GREEN));
     if(wireFrame)
         cylinderDrawWireFrame(gl,program);
     else
         cylinderDrawFilled(gl,program);
+}
+
+const TURN = 0;
+function frontLeftWheel(){
+    multTranslation([0,0,-0.6]);
+    multRotationY(TURN); // turns wheel it seems
+    multRotationX(90);
+    multScale([0.3,0.3,0.3]);
+    wheel();
+}
+
+function frontRightWheel(){
+    multTranslation([0,0,0.6]);
+    multRotationY(TURN); // turns wheel it seems
+    multRotationX(90);
+    multScale([0.3,0.3,0.3]);
+    wheel();
+}
+
+function wheel(){
+    gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
+    gl.uniform4fv(colorLoc, flatten(BLUE));
+    if(wireFrame)
+        torusDrawWireFrame(gl,program);
+    else
+        torusDrawFilled(gl,program);
 }
 
 function sceneBuilder(){
@@ -143,14 +174,22 @@ function sceneBuilder(){
         cabin();
     popMatrix();
     pushMatrix();
-        multTranslation([0.6, -1, 0]);
+        multTranslation([0.6, -0.5, 0]);
     pushMatrix();
         front_axis();
     popMatrix();
-    popMatrix();
-        multTranslation([-0.6, -1, 0]);
     pushMatrix();
-    front_axis();
+        frontLeftWheel();
+    popMatrix();
+    pushMatrix();
+        frontRightWheel();
+    popMatrix();
+    popMatrix();
+    pushMatrix();
+        multTranslation([-0.6, -0.5, 0]);
+    pushMatrix();
+        front_axis(); //rear actualkly
+    popMatrix();
     popMatrix();
 }
 
@@ -158,7 +197,7 @@ function sceneBuilder(){
 function render() 
 {
     var projection = ortho(-VP_DISTANCE*aspect,VP_DISTANCE*aspect, -VP_DISTANCE, VP_DISTANCE,-3*VP_DISTANCE,3*VP_DISTANCE);
-    modelView = lookAt([0,1,0], [0,0,0], [0,0,-1]);
+    modelView = lookAt(eye, at, up);
  
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     
@@ -170,7 +209,7 @@ function render()
     
     sceneBuilder();
 
-    requestAnimationFrame(render);
+    //requestAnimationFrame(render);
 
 
 }
