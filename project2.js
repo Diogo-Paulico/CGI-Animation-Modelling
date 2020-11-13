@@ -101,7 +101,7 @@ window.onload = function() {
     render();
 }
 
-const SCALAR = 1.0;
+const SCALAR = 500.0;
 
 function mainBodyPiece()
 {
@@ -116,8 +116,8 @@ function mainBodyPiece()
 
 function cabin()
 {
-    multTranslation([1.35,-0.15,0.0]);
-    multScale([0.7, 0.7,1.0]);
+    multTranslation([1.35 * SCALAR,-0.15 * SCALAR,0.0 * SCALAR]);
+    multScale([0.7 * SCALAR, 0.7 * SCALAR,1.0 * SCALAR]);
     gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
     gl.uniform4fv(colorLoc, flatten(RED));
     if(wireFrame)
@@ -130,7 +130,7 @@ function front_axis(){
 
     multRotationY(90);
     multRotationZ(90);
-    multScale([1/15, 1.15, 1/15]);
+    multScale([1/15 * SCALAR, 1.15 * SCALAR, 1/15 * SCALAR]);
     gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
     gl.uniform4fv(colorLoc, flatten(GREEN));
     if(wireFrame)
@@ -141,33 +141,33 @@ function front_axis(){
 
 const TURN = 0;
 function frontLeftWheel(){
-    multTranslation([0,0,-0.6]);
+    multTranslation([0 * SCALAR,0 * SCALAR,-0.6 * SCALAR]);
     multRotationY(TURN); // turns wheel it seems
     multRotationX(90);
-    multScale([0.3,0.3,0.3]); // torus_Radius * scale
+    multScale([0.3 * SCALAR,0.3 * SCALAR,0.3 * SCALAR]); // torus_Radius * scale
     wheel();
 }
 
 function frontRightWheel(){
-    multTranslation([0,0,0.6]);
+    multTranslation([0 * SCALAR,0 * SCALAR,0.6 * SCALAR]);
     multRotationY(TURN); // turns wheel it seems
     multRotationX(90);
-    multScale([0.3,0.3,0.3]);
+    multScale([0.3 * SCALAR,0.3 * SCALAR,0.3 * SCALAR]);
     wheel();
 }
 
 
 function rearRightWheel(){
-    multTranslation([0,0,0.6]);
+    multTranslation([0 * SCALAR,0 * SCALAR,0.6 * SCALAR]);
     multRotationX(90);
-    multScale([0.3,0.3,0.3]);
+    multScale([0.3 * SCALAR,0.3 * SCALAR,0.3 * SCALAR]);
     wheel();
 }
 
 function rearLeftWheel(){
-    multTranslation([0,0,-0.6]);
+    multTranslation([0 * SCALAR,0 * SCALAR,-0.6 * SCALAR]);
     multRotationX(90);
-    multScale([0.3,0.3,0.3]); // torus_Radius * scale
+    multScale([0.3 * SCALAR,0.3 * SCALAR,0.3 * SCALAR]); // torus_Radius * scale
     wheel();
 }
 
@@ -181,15 +181,16 @@ function wheel(){
 }
 
 function sceneBuilder(){
-    multTranslation([-1.0,1.0,1.0]); // ALIGNING OVERALL SCENE
+    multTranslation([-1.0 * SCALAR ,1.0 * SCALAR,1.0 * SCALAR]); // ALIGNING OVERALL SCENE
     pushMatrix();
       mainBodyPiece();
     popMatrix();
     pushMatrix();
         cabin();
     popMatrix();
+
     pushMatrix();
-        multTranslation([0.6, -0.5, 0]);
+        multTranslation([0.6 * SCALAR, -0.5 * SCALAR, 0 * SCALAR]);
     pushMatrix();
         front_axis();
     popMatrix();
@@ -200,21 +201,22 @@ function sceneBuilder(){
         frontRightWheel();
     popMatrix();
     popMatrix();
+
     pushMatrix();
-        multTranslation([-0.6, -0.5, 0]);
+        multTranslation([-0.6 * SCALAR, -0.5 * SCALAR, 0 * SCALAR]);
     pushMatrix();
         front_axis(); //rear actualkly
     popMatrix();
     pushMatrix();
-    rearRightWheel()
+        rearRightWheel()
     popMatrix();
     pushMatrix();
-    rearLeftWheel();
+        rearLeftWheel();
     popMatrix();
 }
 
-    const VP_DISTANCE = 2;
-function render() 
+    const VP_DISTANCE =  1000; //VALOR ALTO LIKE 1000 TO MAKE TRANSLATE BIG
+function render()
 {
     var projection = ortho(-VP_DISTANCE*aspect,VP_DISTANCE*aspect, -VP_DISTANCE, VP_DISTANCE,-3*VP_DISTANCE,3*VP_DISTANCE);
     modelView = lookAt(eye, at, up);
