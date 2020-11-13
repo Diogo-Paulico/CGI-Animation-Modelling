@@ -5,29 +5,28 @@
 </head>
 
 <script id="default-vertex" type="x-shader/x-vertex">
-uniform mat4 mModelView;
-uniform mat4 mProjection;
+    uniform mat4 mModelView;
+    uniform mat4 mProjection;
 
-attribute vec4 vPosition;
-attribute vec3 vNormal;
+    attribute vec4 vPosition;
+    attribute vec3 vNormal;
 
-varying vec3 fNormal;
+    varying vec3 fNormal;
 
-void main() {
-gl_Position = mProjection * mModelView * vPosition;
-fNormal = vNormal;
-}
+  void main() {
+    gl_Position = mProjection * mModelView * vPosition;
+    fNormal = vNormal;
+    }
 </script>
 
 <script id="default-fragment" type="x-shader/x-fragment">
     precision highp float;
 
-varying vec3 fNormal;
+    varying vec3 fNormal;
 
-void main() {
-    gl_FragColor = vec4(abs(fNormal), 1.0);
-
-}
+    void main() {
+        gl_FragColor = vec4(abs(fNormal), 1.0);
+    }
 </script>
     
     <script type="text/javascript" src="./Common/webgl-utils.js"></script>
@@ -40,7 +39,7 @@ void main() {
     <script type="text/javascript" src="project2.js"></script>
 <body style="margin: 0px">
     <div>
-        <canvas id="gl-canvas" width="1024" height="680">
+        <canvas id="gl-canvas" width="100%" height="100%">
             Ooops! Your browser doen't support WebGL!
         </canvas>
     </div>

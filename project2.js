@@ -156,6 +156,21 @@ function frontRightWheel(){
     wheel();
 }
 
+
+function rearRightWheel(){
+    multTranslation([0,0,0.6]);
+    multRotationX(90);
+    multScale([0.3,0.3,0.3]);
+    wheel();
+}
+
+function rearLeftWheel(){
+    multTranslation([0,0,-0.6]);
+    multRotationX(90);
+    multScale([0.3,0.3,0.3]); // torus_Radius * scale
+    wheel();
+}
+
 function wheel(){
     gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
     gl.uniform4fv(colorLoc, flatten(BLUE));
@@ -190,6 +205,11 @@ function sceneBuilder(){
     pushMatrix();
         front_axis(); //rear actualkly
     popMatrix();
+    pushMatrix();
+    rearRightWheel()
+    popMatrix();
+    pushMatrix();
+    rearLeftWheel();
     popMatrix();
 }
 
@@ -209,7 +229,7 @@ function render()
     
     sceneBuilder();
 
-    //requestAnimationFrame(render);
+    requestAnimationFrame(render);
 
 
 }
