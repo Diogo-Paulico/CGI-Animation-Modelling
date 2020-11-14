@@ -113,7 +113,6 @@ function changeViewMode(key) {
 }
 
 
-
 window.onkeypress = function(event){
     var key = String.fromCharCode(event.keyCode);
     switch (key.toLocaleLowerCase()){
@@ -183,15 +182,31 @@ window.onload = function() {
 
 const SCALAR = 350.0;
 
+
+function makeFloor(){
+    for (let i = 0; i < 9; i++) {
+        for(let j = 0; j < 10; j++) {
+            pushMatrix();
+            multTranslation([SCALAR * (i - 4.5), 0, SCALAR * (j - 10/2)]);
+            multRotationX(90);
+            multScale([SCALAR, SCALAR, 0]);
+            gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
+            gl.uniform4fv(colorLoc, flatten(PURPLE));
+
+            cubeDrawWireFrame(gl, program);
+
+            popMatrix();
+        }
+    }
+}
 function mainBodyPiece()
 {
    	  multScale([2 * SCALAR,1 * SCALAR,1 * SCALAR]);
    	  gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
    	  gl.uniform4fv(colorLoc, flatten(PURPLE));
-     if(wireFrame)
+
          cubeDrawWireFrame(gl,program);
-        else
-         cubeDrawFilled(gl, program);
+
 }
 
 function cabin()
@@ -351,7 +366,8 @@ function decreaseSpeed(){
 }
 
 function sceneBuilder(){
-    multTranslation([(-1.0+ desloc) * SCALAR  ,1.0 * SCALAR,1.0 * SCALAR]); // ALIGNING OVERALL SCENE
+    makeFloor();
+    multTranslation([(-1.0+ desloc) * SCALAR  ,.71 * SCALAR,(1.0 ) * SCALAR]); // ALIGNING OVERALL SCENE
     pushMatrix();
       mainBodyPiece();
     popMatrix();
