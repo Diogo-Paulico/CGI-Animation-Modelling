@@ -1,7 +1,7 @@
 var canvas;
 var gl;
 var program;
-
+var turn = 0;
 var aspect;
 
 var mProjectionLoc, mModelViewLoc, colorLoc;
@@ -17,7 +17,8 @@ var up = [0, 1, 0];
 var atUP = [0,0,0];
 var eyeUP =[0,1,0];
 var upUP = [0,0,-1];
-
+var desloc = 0;
+let speed = 0;
 
 const PURPLE = vec4(0.6,0.5,1.0, 1.0);
 const RED = vec4(1.0,0.0,0.0, 1.0);
@@ -69,10 +70,23 @@ window.onresize = function () {
 
 window.onkeypress = function(event){
     var key = String.fromCharCode(event.keyCode);
-    switch (key){
+    switch (key.toLocaleLowerCase()){
         case ' ':
             wireFrame = !wireFrame;
             break;
+        case 'w':
+            increaseSpeed();
+            break;
+        case 's':
+            decreaseSpeed();
+            break;
+        case 'a':
+            turnWheel(2);
+            break;
+        case 'd':
+            turnWheel(-2);
+            break;
+
     }
 };
 
@@ -139,10 +153,14 @@ function front_axis(){
         cylinderDrawFilled(gl,program);
 }
 
-const TURN = 0;
+function turnWheel(angle) {
+    if (speed == 0 && ((angle > 0 && turn < 30) || (angle < 0 && turn > -30)))
+        turn += angle;
+}
+
 function frontLeftWheel(){
     multTranslation([0 * SCALAR,0 * SCALAR,-0.6 * SCALAR]);
-    multRotationY(TURN); // turns wheel it seems
+    multRotationY(turn); // turns wheel it seems
     multRotationX(90);
     multScale([0.3 * SCALAR,0.3 * SCALAR,0.3 * SCALAR]); // torus_Radius * scale
     wheel();
@@ -150,7 +168,7 @@ function frontLeftWheel(){
 
 function frontRightWheel(){
     multTranslation([0 * SCALAR,0 * SCALAR,0.6 * SCALAR]);
-    multRotationY(TURN); // turns wheel it seems
+    multRotationY(turn); // turns wheel it seems
     multRotationX(90);
     multScale([0.3 * SCALAR,0.3 * SCALAR,0.3 * SCALAR]);
     wheel();
@@ -180,8 +198,18 @@ function wheel(){
         torusDrawFilled(gl,program);
 }
 
+function increaseSpeed(){
+
+    speed += 0.005;
+}
+
+function decreaseSpeed(){
+
+    speed -= 0.005;
+}
+
 function sceneBuilder(){
-    multTranslation([-1.0 * SCALAR ,1.0 * SCALAR,1.0 * SCALAR]); // ALIGNING OVERALL SCENE
+    multTranslation([(-1.0+ desloc) * SCALAR  ,1.0 * SCALAR,1.0 * SCALAR]); // ALIGNING OVERALL SCENE
     pushMatrix();
       mainBodyPiece();
     popMatrix();
@@ -228,7 +256,7 @@ function render()
 //    let m = mult(modelView,update_ctm());
     gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
 
-    
+    desloc += speed;
     sceneBuilder();
 
     requestAnimationFrame(render);
