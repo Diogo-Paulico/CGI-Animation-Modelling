@@ -279,7 +279,7 @@ function antenaBase(){
 
 function antenaArm(){
 
-    multTranslation([0.39 * SCALAR, 0.08* SCALAR, 0.00 * SCALAR]);
+    multTranslation([0.39 * SCALAR, 0* SCALAR, 0.00 * SCALAR]);
     multRotationZ(90);
     multScale([0.04* SCALAR, 0.7 * SCALAR, 0.04* SCALAR]);
     gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
@@ -306,7 +306,7 @@ function antenaKnee(){
 
 function antenaDish(){
 
-    multTranslation([0.75 * SCALAR, 0.1* SCALAR, 0 * SCALAR]);
+    multTranslation([0.75 * SCALAR, 0* SCALAR, 0 * SCALAR]);
 
     multScale([0.25 *SCALAR, 0.25* SCALAR, 0.25*SCALAR]);
     gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
@@ -362,8 +362,8 @@ function sceneBuilder(){
         //popMatrix();
     popMatrix();//
         pushMatrix();
-        multTranslation([0*SCALAR, 0.555*SCALAR, 0 *SCALAR]);
-        multTranslation([0*SCALAR, 0.08*SCALAR, 0 *SCALAR]);
+        multTranslation([0*SCALAR, (0.555 + 0.08) *SCALAR, 0 *SCALAR]);
+        //multTranslation([0*SCALAR, 0.08*SCALAR, 0 *SCALAR]);
         multRotationY(armTurn); //MOVE ARM SIDEWAYS
         multRotationZ(armUp);
             pushMatrix();
