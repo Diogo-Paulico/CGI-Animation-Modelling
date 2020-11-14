@@ -24,6 +24,7 @@ const PURPLE = vec4(0.6,0.5,1.0, 1.0);
 const RED = vec4(1.0,0.0,0.0, 1.0);
 const GREEN = vec4(0.0, 1.0, 0.0, 1.0);
 const BLUE = vec4(0.0, 0.0, 1.0, 1.0);
+//const WHITE = vec4(1.0, 1.0, 1.0, 1.0);
 
 // Stack related operations
 function pushMatrix() {
@@ -115,7 +116,7 @@ window.onload = function() {
     render();
 }
 
-const SCALAR = 500.0;
+const SCALAR = 350.0;
 
 function mainBodyPiece()
 {
@@ -256,6 +257,8 @@ function render()
 //    let m = mult(modelView,update_ctm());
     gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
 
+    if(0 < Math.abs(speed) < 0.005)
+        speed = 0;
     desloc += speed;
     sceneBuilder();
 
