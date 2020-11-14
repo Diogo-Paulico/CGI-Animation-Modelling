@@ -8,7 +8,6 @@ var mProjectionLoc, mModelViewLoc, colorPickLoc, colorLoc;
 
 var projection;
 let useFixedColor = false;
-var pickLoc;
 var matrixStack = [];
 var modelView;
 var at = [0, 0, 0];
@@ -43,7 +42,7 @@ const CUSTOM_VIEW = lookAt(eye, at, up)
 const SIDE_VIEW = lookAt(eye2, at, up);
 const FRONT_VIEW  = lookAt(eye3, at, up);
 const TOP_VIEW = lookAt(eyeUP, atUP, upUP);
-const VP_DISTANCE = 750;
+const VP_DISTANCE = 550;
 
 const TURN_STEP = 8;
 const UP_STEP = 8;
@@ -110,7 +109,6 @@ function changeViewMode(key) {
             currentView = FRONT_VIEW;
             break;
     }
-
 }
 
 
@@ -199,16 +197,16 @@ function makeFloor(){
 
                 popMatrix();
             }
-            }
+        }
     }
 }
+
 function mainBodyPiece() {
    	  multScale([2 * SCALAR, 1 * SCALAR, 1 * SCALAR]);
    	  gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
    	  gl.uniform4fv(colorLoc, flatten(PURPLE));
 
          cubeDrawWireFrame(gl,program);
-
 }
 
 function cabin()
@@ -219,7 +217,6 @@ function cabin()
     gl.uniform4fv(colorLoc, flatten(RED));
 
         cubeDrawWireFrame(gl,program);
-
 }
 
 function axis(){
@@ -231,7 +228,6 @@ function axis(){
     gl.uniform4fv(colorLoc, flatten(GREEN));
 
         cylinderDrawWireFrame(gl,program);
-
 }
 
 function turnWheel(angle) {
@@ -311,7 +307,7 @@ function antennaKnee(){
 
 function antennaDish(){
     multTranslation([0.75 * SCALAR, 0* SCALAR, 0 * SCALAR]);
-    multScale([0.35 *SCALAR, 0.35* SCALAR, 0.35*SCALAR]);
+    multScale([0.5 *SCALAR, 0.5* SCALAR, 0.5*SCALAR]);
     gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
     gl.uniform4fv(colorLoc, flatten(WHITE));
 
@@ -361,13 +357,10 @@ function sceneBuilder(){
     popMatrix();
     pushMatrix();
         multTranslation([0 * SCALAR, 0.55 *SCALAR, 0*SCALAR]);
-       // pushMatrix();
             antennaBase();
-        //popMatrix();
     popMatrix();//
         pushMatrix();
         multTranslation([0*SCALAR, (0.555 + 0.08) *SCALAR, 0 *SCALAR]);
-        //multTranslation([0*SCALAR, 0.08*SCALAR, 0 *SCALAR]);
         multRotationY(armTurn); //MOVE ARM SIDEWAYS
         multRotationZ(armUp);
             pushMatrix();
@@ -380,7 +373,6 @@ function sceneBuilder(){
                 antennaDish();
              popMatrix();
         popMatrix();
-    //popMatrix();
     pushMatrix();
         multTranslation([0.6 * SCALAR, -0.5 * SCALAR, 0 * SCALAR]);
     pushMatrix();
@@ -393,7 +385,6 @@ function sceneBuilder(){
         frontRightWheel();
     popMatrix();
     popMatrix();
-
     pushMatrix();
         multTranslation([-0.6 * SCALAR, -0.5 * SCALAR, 0 * SCALAR]);
     pushMatrix();
@@ -419,19 +410,11 @@ function move(){
 function render()
 {
     projection = ortho(-VP_DISTANCE*aspect,VP_DISTANCE*aspect, -VP_DISTANCE, VP_DISTANCE,-3*VP_DISTANCE,3*VP_DISTANCE);
-
     modelView = currentView;
-
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    
     gl.uniformMatrix4fv(mProjectionLoc, false, flatten(projection));
-
     gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
-
-
     move();
-
     sceneBuilder();
-
    requestAnimationFrame(render);
 }
