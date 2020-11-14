@@ -28,7 +28,7 @@ var eye1 = [0,0,1]; // LATERAL
 var eye2 = [1,0,0]; // frontal
 var up1 = [0, 1, 0];
 
-const SPEED_STEP = 0.0005;
+
 const PURPLE = vec4(0.6,0.5,1.0, 1.0);
 const RED = vec4(1.0,0.0,0.0, 1.0);
 const GREEN = vec4(0.0, 1.0, 0.0, 1.0);
@@ -42,6 +42,12 @@ const FRONT_VIEW  = lookAt(eye2, at, up);
 const TOP_VIEW = lookAt(eyeUP, atUP, upUP);
 
 const TURN_STEP = 8;
+const UP_STEP = 8;
+
+const SPEED_STEP = 0.0005;
+const MAX_FORWARD_SPEED = 0.001;
+const MAX_REVERSE_SPEED = 2;
+var armUp = 0;
 
 var currentView = SIDE_VIEW;
 // Stack related operations
@@ -138,8 +144,12 @@ window.onkeypress = function(event){
         case 'j':
             turnArm("right");
             break;
-
-
+        case 'i':
+            upAndDownArm("up");
+            break;
+        case 'k':
+            upAndDownArm("down");
+            break;
     }
 };
 
@@ -268,9 +278,10 @@ function antenaBase(){
 }
 
 function antenaArm(){
+
     multTranslation([0.39 * SCALAR, 0.08* SCALAR, 0.00 * SCALAR]);
-    multScale([0.7* SCALAR, 0.04 * SCALAR, 0.04* SCALAR]);
     multRotationZ(90);
+    multScale([0.04* SCALAR, 0.7 * SCALAR, 0.04* SCALAR]);
     gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
     gl.uniform4fv(colorLoc, flatten(RED));
     if(wireFrame)
@@ -281,8 +292,9 @@ function antenaArm(){
 }
 
 function antenaKnee(){
-    console.log("ywwt");
-    multTranslation([0*SCALAR, 0.08*SCALAR, 0 *SCALAR]);
+
+    //console.log("ywwt");
+
     multScale([0.08* SCALAR, 0.08 * SCALAR, 0.08* SCALAR]);
     gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
     gl.uniform4fv(colorLoc, flatten(WHITE));
@@ -293,7 +305,9 @@ function antenaKnee(){
 }
 
 function antenaDish(){
+
     multTranslation([0.75 * SCALAR, 0.1* SCALAR, 0 * SCALAR]);
+
     multScale([0.25 *SCALAR, 0.25* SCALAR, 0.25*SCALAR]);
     gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
     gl.uniform4fv(colorLoc, flatten(WHITE));
@@ -308,6 +322,12 @@ function turnArm(direction) {
     armTurn += direction=="left" ? (-TURN_STEP) : TURN_STEP;
     armTurn = armTurn % 360;
 }
+
+function upAndDownArm(upOrDown) {
+
+    armUp += upOrDown=="down" ? (-UP_STEP) : UP_STEP;
+    armUp = armUp % 360;
+}
 function changeColorMode(){
 
     useFixedColor = !useFixedColor;
@@ -317,14 +337,14 @@ function changeColorMode(){
 function increaseSpeed(){
     if(turn != 0)
         turn =0;
-    speed += SPEED_STEP;
+    speed += speed < MAX_FORWARD_SPEED ? SPEED_STEP : 0;
 
 }
 
 function decreaseSpeed(){
     if(turn != 0)
         turn =0;
-    speed -= SPEED_STEP;
+    speed -= speed > -MAX_REVERSE_SPEED ? SPEED_STEP : 0;
 }
 
 function sceneBuilder(){
@@ -337,26 +357,26 @@ function sceneBuilder(){
     popMatrix();
     pushMatrix();
         multTranslation([0 * SCALAR, 0.55 *SCALAR, 0*SCALAR]);
+       // pushMatrix();
+            antenaBase();
+        //popMatrix();
+    popMatrix();//
         pushMatrix();
-        antenaBase();
-    popMatrix();
-        pushMatrix();
-        //multRotationX(45);
-       multRotationY(armTurn); //MOVE ARM SIDEWAYS
-        //multRotationZ(30);
+        multTranslation([0*SCALAR, 0.555*SCALAR, 0 *SCALAR]);
+        multTranslation([0*SCALAR, 0.08*SCALAR, 0 *SCALAR]);
+        multRotationY(armTurn); //MOVE ARM SIDEWAYS
+        multRotationZ(armUp);
             pushMatrix();
                 antenaKnee();
             popMatrix();
-             pushMatrix();
+            pushMatrix();
                 antenaArm();
-           popMatrix();
+            popMatrix();
              pushMatrix();
                 antenaDish();
-                console.log("yeetxd420");
              popMatrix();
-
         popMatrix();
-    popMatrix();
+    //popMatrix();
     pushMatrix();
         multTranslation([0.6 * SCALAR, -0.5 * SCALAR, 0 * SCALAR]);
     pushMatrix();
