@@ -22,12 +22,13 @@ var desloc = 0;
 let speed = 0;
 
 var spin = 0;
+var armTurn = 0;
 
 var eye1 = [0,0,1]; // LATERAL
 var eye2 = [1,0,0]; // frontal
 var up1 = [0, 1, 0];
 
-const SPEED_STEP = 0.005;
+const SPEED_STEP = 0.0005;
 const PURPLE = vec4(0.6,0.5,1.0, 1.0);
 const RED = vec4(1.0,0.0,0.0, 1.0);
 const GREEN = vec4(0.0, 1.0, 0.0, 1.0);
@@ -40,7 +41,9 @@ const SIDE_VIEW = lookAt(eye1, at, up);
 const FRONT_VIEW  = lookAt(eye2, at, up);
 const TOP_VIEW = lookAt(eyeUP, atUP, upUP);
 
-var currentView = CUSTOM_VIEW;
+const TURN_STEP = 8;
+
+var currentView = SIDE_VIEW;
 // Stack related operations
 function pushMatrix() {
     var m =  mat4(modelView[0], modelView[1],
@@ -103,6 +106,8 @@ function changeViewMode(key) {
 
 }
 
+
+
 window.onkeypress = function(event){
     var key = String.fromCharCode(event.keyCode);
     switch (key.toLocaleLowerCase()){
@@ -127,6 +132,13 @@ window.onkeypress = function(event){
         case '3':
             changeViewMode(key);
             break;
+        case 'l':
+            turnArm("left");
+            break;
+        case 'j':
+            turnArm("right");
+            break;
+
 
     }
 };
@@ -154,6 +166,7 @@ window.onload = function() {
     cubeInit(gl);
     cylinderInit(gl);
     torusInit(gl);
+    sphereInit(gl);
     render();
 }
 
@@ -242,7 +255,7 @@ function wheel(){
 }
 
 function antenaBase(){
-    multTranslation([0 * SCALAR, 0.65 *SCALAR, 0*SCALAR]);
+
     multRotationY(90);
    // multRotationZ(90);
     multScale([1/15 * SCALAR, 0.10 * SCALAR, 1/15 * SCALAR]);
@@ -255,15 +268,46 @@ function antenaBase(){
 }
 
 function antenaArm(){
+    multTranslation([0.39 * SCALAR, 0.08* SCALAR, 0.00 * SCALAR]);
+    multScale([0.7* SCALAR, 0.04 * SCALAR, 0.04* SCALAR]);
+    multRotationZ(90);
+    gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
+    gl.uniform4fv(colorLoc, flatten(RED));
+    if(wireFrame)
+        cylinderDrawWireFrame(gl,program);
+    else
+        cylinderDrawFilled(gl,program);
 
 }
 
-function antenaMiddle(){}
+function antenaKnee(){
+    console.log("ywwt");
+    multTranslation([0*SCALAR, 0.08*SCALAR, 0 *SCALAR]);
+    multScale([0.08* SCALAR, 0.08 * SCALAR, 0.08* SCALAR]);
+    gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
+    gl.uniform4fv(colorLoc, flatten(WHITE));
+    if(wireFrame)
+        sphereDrawWireFrame(gl,program);
+    else
+        sphereDrawFilled(gl,program);
+}
 
 function antenaDish(){
+    multTranslation([0.75 * SCALAR, 0.1* SCALAR, 0 * SCALAR]);
+    multScale([0.25 *SCALAR, 0.25* SCALAR, 0.25*SCALAR]);
+    gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
+    gl.uniform4fv(colorLoc, flatten(WHITE));
+    if(wireFrame)
+        sphereDrawWireFrame(gl,program);
+    else
+        sphereDrawFilled(gl,program);
 
 }
+function turnArm(direction) {
 
+    armTurn += direction=="left" ? (-TURN_STEP) : TURN_STEP;
+    armTurn = armTurn % 360;
+}
 function changeColorMode(){
 
     useFixedColor = !useFixedColor;
@@ -292,7 +336,26 @@ function sceneBuilder(){
         cabin();
     popMatrix();
     pushMatrix();
+        multTranslation([0 * SCALAR, 0.55 *SCALAR, 0*SCALAR]);
+        pushMatrix();
         antenaBase();
+    popMatrix();
+        pushMatrix();
+        //multRotationX(45);
+       multRotationY(armTurn); //MOVE ARM SIDEWAYS
+        //multRotationZ(30);
+            pushMatrix();
+                antenaKnee();
+            popMatrix();
+             pushMatrix();
+                antenaArm();
+           popMatrix();
+             pushMatrix();
+                antenaDish();
+                console.log("yeetxd420");
+             popMatrix();
+
+        popMatrix();
     popMatrix();
     pushMatrix();
         multTranslation([0.6 * SCALAR, -0.5 * SCALAR, 0 * SCALAR]);
@@ -320,7 +383,7 @@ function sceneBuilder(){
     popMatrix();
 }
 
-    const VP_DISTANCE =  1000; //VALOR ALTO LIKE 1000 TO MAKE TRANSLATE BIG
+    const VP_DISTANCE =  900; //VALOR ALTO LIKE 1000 TO MAKE TRANSLATE BIG
 function render()
 {
     var projection = ortho(-VP_DISTANCE*aspect,VP_DISTANCE*aspect, -VP_DISTANCE, VP_DISTANCE,-3*VP_DISTANCE,3*VP_DISTANCE);
@@ -341,7 +404,9 @@ function render()
 
     desloc += speed;
 
-    spin -= (speed * SCALAR) / (torus_RADIUS * 0.3);
+    spin -= ((speed * SCALAR) / (torus_RADIUS * SCALAR * 0.3)) * SCALAR;
+    spin = spin %360;
+    console.log((torus_RADIUS * 0.3)); 
     console.log(spin);
     sceneBuilder();
 
