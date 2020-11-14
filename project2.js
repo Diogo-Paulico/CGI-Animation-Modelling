@@ -94,7 +94,7 @@ window.onresize = function () {
 }
 
 function changeViewMode(key) {
-    console.log(key);
+    //console.log(key);
     switch(key){
         case '0':
             currentView = CUSTOM_VIEW;
@@ -294,7 +294,7 @@ function antenaArm(){
 
 function antenaKnee(){
 
-    //console.log("ywwt");
+    ////console.log("ywwt");
 
     multScale([0.08* SCALAR, 0.08 * SCALAR, 0.08* SCALAR]);
     gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
@@ -309,7 +309,7 @@ function antenaDish(){
 
     multTranslation([0.75 * SCALAR, 0* SCALAR, 0 * SCALAR]);
 
-    multScale([0.25 *SCALAR, 0.25* SCALAR, 0.25*SCALAR]);
+    multScale([0.35 *SCALAR, 0.35* SCALAR, 0.35*SCALAR]);
     gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
     gl.uniform4fv(colorLoc, flatten(WHITE));
     if(wireFrame)
@@ -325,7 +325,9 @@ function turnArm(direction) {
 }
 
 function upAndDownArm(upOrDown) {
-
+    console.log(armUp);
+    if((armUp == -UP_STEP &&  upOrDown == "down") || (armUp == 176 && upOrDown == "up"))
+        return ;
     armUp += upOrDown=="down" ? (-UP_STEP) : UP_STEP;
     armUp = armUp % 360;
 }
@@ -404,7 +406,7 @@ function sceneBuilder(){
     popMatrix();
 }
 
-    const VP_DISTANCE =  900; //VALOR ALTO LIKE 1000 TO MAKE TRANSLATE BIG
+    const VP_DISTANCE =  700; //VALOR ALTO LIKE 1000 TO MAKE TRANSLATE BIG
 function render()
 {
     var projection = ortho(-VP_DISTANCE*aspect,VP_DISTANCE*aspect, -VP_DISTANCE, VP_DISTANCE,-3*VP_DISTANCE,3*VP_DISTANCE);
@@ -427,8 +429,8 @@ function render()
 
     spin -= ((speed * SCALAR) / (torus_RADIUS * SCALAR * 0.3)) * SCALAR;
     spin = spin %360;
-    console.log((torus_RADIUS * 0.3)); 
-    console.log(spin);
+    //console.log((torus_RADIUS * 0.3)); 
+    //console.log(spin);
     sceneBuilder();
 
    requestAnimationFrame(render);
