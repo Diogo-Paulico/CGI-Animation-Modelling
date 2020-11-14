@@ -26,10 +26,15 @@
     varying vec3 fNormal;
 
     vec4 pick(int choice, vec3 normal, vec4 paint){
-
+         if(choice == 0){
+            return vec4(abs(normal), 1.0);
+         }else if(choice == 1){
+             return paint;
+         }
+        return vec4(0,0,0,0);
     }
     void main() {
-        gl_FragColor = vec4(abs(fNormal), 1.0);
+        gl_FragColor = pick(colorPick, fNormal, color);
     }
 </script>
     

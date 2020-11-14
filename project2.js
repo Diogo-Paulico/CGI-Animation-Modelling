@@ -4,10 +4,11 @@ var program;
 var turn = 0;
 var aspect;
 
-var mProjectionLoc, mModelViewLoc, colorLoc;
+var mProjectionLoc, mModelViewLoc, colorPickLoc;
 
 var projection;
-
+let useFixedColor = false;
+var pickLoc;
 var matrixStack = [];
 var modelView;
 let wireFrame = true;
@@ -20,12 +21,26 @@ var upUP = [0,0,-1];
 var desloc = 0;
 let speed = 0;
 
+var spin = 0;
+
+var eye1 = [0,0,1]; // LATERAL
+var eye2 = [1,0,0]; // frontal
+var up1 = [0, 1, 0];
+
+const SPEED_STEP = 0.005;
 const PURPLE = vec4(0.6,0.5,1.0, 1.0);
 const RED = vec4(1.0,0.0,0.0, 1.0);
 const GREEN = vec4(0.0, 1.0, 0.0, 1.0);
 const BLUE = vec4(0.0, 0.0, 1.0, 1.0);
-//const WHITE = vec4(1.0, 1.0, 1.0, 1.0);
+const WHITE = vec4(1.0, 1.0, 1.0, 1.0);
 
+//views
+const CUSTOM_VIEW = lookAt(eye, at, up)
+const SIDE_VIEW = lookAt(eye1, at, up);
+const FRONT_VIEW  = lookAt(eye2, at, up);
+const TOP_VIEW = lookAt(eyeUP, atUP, upUP);
+
+var currentView = CUSTOM_VIEW;
 // Stack related operations
 function pushMatrix() {
     var m =  mat4(modelView[0], modelView[1],
@@ -69,11 +84,30 @@ window.onresize = function () {
     fit_canvas_to_window();
 }
 
+function changeViewMode(key) {
+    console.log(key);
+    switch(key){
+        case '0':
+            currentView = CUSTOM_VIEW;
+            break;
+        case '1':
+            currentView = TOP_VIEW;
+            break;
+        case '2':
+            currentView = SIDE_VIEW;
+            break;
+        case '3':
+            currentView = FRONT_VIEW;
+            break;
+    }
+
+}
+
 window.onkeypress = function(event){
     var key = String.fromCharCode(event.keyCode);
     switch (key.toLocaleLowerCase()){
         case ' ':
-            wireFrame = !wireFrame;
+            changeColorMode();
             break;
         case 'w':
             increaseSpeed();
@@ -86,6 +120,12 @@ window.onkeypress = function(event){
             break;
         case 'd':
             turnWheel(-2);
+            break;
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+            changeViewMode(key);
             break;
 
     }
@@ -109,6 +149,7 @@ window.onload = function() {
     mModelViewLoc = gl.getUniformLocation(program, "mModelView");
     mProjectionLoc = gl.getUniformLocation(program, "mProjection");
     colorLoc = gl.getUniformLocation(program, "color");
+    colorPickLoc = gl.getUniformLocation(program, "colorPick");
 
     cubeInit(gl);
     cylinderInit(gl);
@@ -191,6 +232,7 @@ function rearLeftWheel(){
 }
 
 function wheel(){
+    multRotationY(spin);
     gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
     gl.uniform4fv(colorLoc, flatten(BLUE));
     if(wireFrame)
@@ -199,14 +241,46 @@ function wheel(){
         torusDrawFilled(gl,program);
 }
 
-function increaseSpeed(){
+function antenaBase(){
+    multTranslation([0 * SCALAR, 0.65 *SCALAR, 0*SCALAR]);
+    multRotationY(90);
+   // multRotationZ(90);
+    multScale([1/15 * SCALAR, 0.10 * SCALAR, 1/15 * SCALAR]);
+    gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
+    gl.uniform4fv(colorLoc, flatten(GREEN));
+    if(wireFrame)
+        cylinderDrawWireFrame(gl,program);
+    else
+        cylinderDrawFilled(gl,program);
+}
 
-    speed += 0.005;
+function antenaArm(){
+
+}
+
+function antenaMiddle(){}
+
+function antenaDish(){
+
+}
+
+function changeColorMode(){
+
+    useFixedColor = !useFixedColor;
+    gl.uniform1i(colorPickLoc,useFixedColor ? 1:0);
+}
+
+function increaseSpeed(){
+    if(turn != 0)
+        turn =0;
+    speed += SPEED_STEP;
+
 }
 
 function decreaseSpeed(){
-
-    speed -= 0.005;
+    if(turn != 0)
+        turn =0;
+    speed -= SPEED_STEP;
 }
 
 function sceneBuilder(){
@@ -217,7 +291,9 @@ function sceneBuilder(){
     pushMatrix();
         cabin();
     popMatrix();
-
+    pushMatrix();
+        antenaBase();
+    popMatrix();
     pushMatrix();
         multTranslation([0.6 * SCALAR, -0.5 * SCALAR, 0 * SCALAR]);
     pushMatrix();
@@ -248,21 +324,28 @@ function sceneBuilder(){
 function render()
 {
     var projection = ortho(-VP_DISTANCE*aspect,VP_DISTANCE*aspect, -VP_DISTANCE, VP_DISTANCE,-3*VP_DISTANCE,3*VP_DISTANCE);
-    modelView = lookAt(eye, at, up);
+
+
+    modelView = currentView;
  
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     
     gl.uniformMatrix4fv(mProjectionLoc, false, flatten(projection));
 
-//    let m = mult(modelView,update_ctm());
     gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
 
-    if(0 < Math.abs(speed) < 0.005)
+    if(0 != Math.abs(speed) && Math.abs(speed) < SPEED_STEP)
         speed = 0;
+
+
+
     desloc += speed;
+
+    spin -= (speed * SCALAR) / (torus_RADIUS * 0.3);
+    console.log(spin);
     sceneBuilder();
 
-    requestAnimationFrame(render);
+   requestAnimationFrame(render);
 
 
 }
