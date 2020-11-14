@@ -177,6 +177,7 @@ window.onload = function() {
     cylinderInit(gl);
     torusInit(gl);
     sphereInit(gl);
+    paraboloidInit(gl);
     render();
 }
 
@@ -312,9 +313,9 @@ function antenaDish(){
     gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
     gl.uniform4fv(colorLoc, flatten(WHITE));
     if(wireFrame)
-        sphereDrawWireFrame(gl,program);
+        paraboloidDrawWireFrame(gl,program);
     else
-        sphereDrawFilled(gl,program);
+        paraboloidDrawFilled(gl,program);
 
 }
 function turnArm(direction) {
