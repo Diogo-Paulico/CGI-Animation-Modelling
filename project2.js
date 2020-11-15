@@ -220,7 +220,6 @@ function cabin()
 }
 
 function axis(){
-
     multRotationY(90);
     multRotationZ(90);
     multScale([1/15 * SCALE, 1.15 * SCALE, 1/15 * SCALE]);
@@ -265,10 +264,7 @@ function wheel(){
 }
 
 function antennaBase(){
-    multTranslation([0 * SCALE, 0.55 *SCALE, 0*SCALE]);
-    multRotationY(90);
-   // multRotationZ(90);
-    multScale([1/15 * SCALE, 0.10 * SCALE, 1/15 * SCALE]);
+
     gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
     gl.uniform4fv(colorLoc, flatten(GREEN));
 
@@ -277,9 +273,7 @@ function antennaBase(){
 
 function antennaArm(){
 
-    multTranslation([0.39 * SCALE, 0* SCALE, 0.00 * SCALE]);
-    multRotationZ(90);
-    multScale([0.04* SCALE, 0.7 * SCALE, 0.04* SCALE]);
+
     gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
     gl.uniform4fv(colorLoc, flatten(RED));
 
@@ -287,7 +281,7 @@ function antennaArm(){
 }
 
 function antennaKnee(){
-    multScale([0.08* SCALE, 0.08 * SCALE, 0.08* SCALE]);
+
     gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
     gl.uniform4fv(colorLoc, flatten(WHITE));
 
@@ -296,8 +290,7 @@ function antennaKnee(){
 }
 
 function antennaDish(){
-    multTranslation([0.75 * SCALE, 0* SCALE, 0 * SCALE]);
-    multScale([0.5 *SCALE, 0.5* SCALE, 0.5*SCALE]);
+
     gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
     gl.uniform4fv(colorLoc, flatten(WHITE));
 
@@ -347,6 +340,10 @@ function sceneBuilder(){
     popMatrix();
     pushMatrix();
         //multTranslation([0 * SCALE, 0.55 *SCALE, 0*SCALE]);
+             multTranslation([0 * SCALE, 0.55 *SCALE, 0*SCALE]);
+            multRotationY(90);
+    // multRotationZ(90);
+             multScale([1/15 * SCALE, 0.10 * SCALE, 1/15 * SCALE]);
             antennaBase();
     popMatrix();//
 
@@ -355,12 +352,18 @@ function sceneBuilder(){
         multRotationY(armTurn); //MOVE ARM SIDEWAYS
         multRotationZ(armUp);
             pushMatrix();
+                multScale([0.08* SCALE, 0.08 * SCALE, 0.08* SCALE]);
                 antennaKnee();
             popMatrix();
             pushMatrix();
+                multTranslation([0.39 * SCALE, 0* SCALE, 0.00 * SCALE]);
+                multRotationZ(90);
+                multScale([0.04* SCALE, 0.7 * SCALE, 0.04* SCALE]);
                 antennaArm();
             popMatrix();
              //pushMatrix();
+                multTranslation([0.75 * SCALE, 0* SCALE, 0 * SCALE]);
+                multScale([0.5 *SCALE, 0.5* SCALE, 0.5*SCALE]);
                 antennaDish();
              //popMatrix();
         popMatrix();
