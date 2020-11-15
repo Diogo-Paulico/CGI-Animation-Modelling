@@ -19,7 +19,6 @@ var upUP = [0,0,-1];
 
 var eye2 = [0,0,1]; // LATERAL
 var eye3 = [1,0,0]; // frontal
-var up1 = [0, 1, 0];
 
 var desloc = 0;
 let speed = 0;
@@ -27,8 +26,6 @@ var spin = 0;
 var armTurn = 0;
 var armUp = 0;
 var currentView;
-
-
 
 //COLORS
 const PURPLE = vec4(0.6,0.5,1.0, 1.0);
@@ -89,7 +86,6 @@ function fit_canvas_to_window()
 
     aspect = canvas.width / canvas.height;
     gl.viewport(0, 0,canvas.width, canvas.height);
-
 }
 
 window.onresize = function () {
@@ -112,7 +108,6 @@ function changeViewMode(key) {
             break;
     }
 }
-
 
 window.onkeypress = function(event){
     let key = String.fromCharCode(event.keyCode);
@@ -179,15 +174,14 @@ window.onload = function() {
     sphereInit(gl);
     paraboloidInit(gl);
 
-    currentView = SIDE_VIEW;
+    currentView = CUSTOM_VIEW;
     render();
 }
-
 
 function makeFloor(){
     for (let i = 0; i < FLOOR; i += 1 ) {
         for(let j = 0; j < FLOOR; j += 1) {
-            if((j %2 == 1 && i%2 == 0 )|| (j %2 == 0 && i%2 == 1 )) {
+            if((j %2 === 1 && i%2 === 0 )|| (j %2 === 0 && i%2 === 1 )) {
                 pushMatrix();
                 multTranslation([1.5*SCALE * (i - (FLOOR /2)), 0, 1.5*SCALE * (j - (FLOOR /2) )]);
                 multRotationX(90);
@@ -204,7 +198,7 @@ function makeFloor(){
 }
 
 function mainBodyPiece() {
-   	  multScale([2 * SCALE, 1 * SCALE, 1 * SCALE]);
+   	  multScale([2 * SCALE, SCALE, SCALE]);
    	  gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
    	  gl.uniform4fv(colorLoc, flatten(PURPLE));
          cubeDrawWireFrame(gl,program);
@@ -212,8 +206,8 @@ function mainBodyPiece() {
 
 function cabin()
 {
-    multTranslation([1.35 * SCALE,-0.15 * SCALE,0.0 * SCALE]);
-    multScale([0.7 * SCALE, 0.7 * SCALE,1.0 * SCALE]);
+    multTranslation([1.35 * SCALE,-0.15 * SCALE,0]);
+    multScale([0.7 * SCALE, 0.7 * SCALE,SCALE]);
     gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
     gl.uniform4fv(colorLoc, flatten(RED));
         cubeDrawWireFrame(gl,program);
@@ -229,10 +223,9 @@ function axis(){
 }
 
 function turnWheel(angle) {
-    if (speed == 0 && ((angle > 0 && turn < 30) || (angle < 0 && turn > -30)))
+    if (speed === 0 && ((angle > 0 && turn < 30) || (angle < 0 && turn > -30)))
         turn += angle;
 }
-
 
 function wheel(){
     multRotationY(spin);
@@ -272,16 +265,15 @@ function antennaDish(){
 }
 
 function turnArm(direction) {
-
-    armTurn += direction=="left" ? (-TURN_STEP) : TURN_STEP;
+    armTurn += direction==="left" ? (-TURN_STEP) : TURN_STEP;
     armTurn = armTurn % 360;
 }
 
 function upAndDownArm(upOrDown) {
     console.log(armUp);
-    if((armUp == -UP_STEP &&  upOrDown == "down") || (armUp == 176 && upOrDown == "up"))
+    if((armUp === -UP_STEP &&  upOrDown === "down") || (armUp === 176 && upOrDown === "up"))
         return ;
-    armUp += upOrDown=="down" ? (-UP_STEP) : UP_STEP;
+    armUp += upOrDown==="down" ? (-UP_STEP) : UP_STEP;
     armUp = armUp % 360;
 }
 function changeColorMode(){
@@ -290,13 +282,13 @@ function changeColorMode(){
 }
 
 function increaseSpeed(){
-    if(turn != 0)
+    if(turn !== 0)
         turn =0;
     speed += speed < MAX_FORWARD_SPEED ? SPEED_STEP : 0;
 }
 
 function decreaseSpeed(){
-    if(turn != 0)
+    if(turn !== 0)
         turn =0;
     speed -= speed > -MAX_REVERSE_SPEED ? SPEED_STEP : 0;
 }
@@ -314,14 +306,14 @@ function sceneBuilder(){
     multTranslation([(-1.0+ desloc) * SCALE  ,0.71 * SCALE,(1.0 ) * SCALE]);
     buildBody();
     pushMatrix(); // antenna base
-        multTranslation([0 * SCALE, 0.55 *SCALE, 0*SCALE]);
+        multTranslation([0, 0.55 *SCALE, 0]);
         multRotationY(90);
         multScale([1/15 * SCALE, 0.10 * SCALE, 1/15 * SCALE]);
         antennaBase();
     popMatrix();
 
         pushMatrix();
-        multTranslation([0*SCALE, 0.635 * SCALE, 0 *SCALE]);
+        multTranslation([0, 0.635 * SCALE, 0]);
         multRotationY(armTurn);
         multRotationZ(armUp);
             pushMatrix(); // antena Knee
@@ -329,35 +321,35 @@ function sceneBuilder(){
                 antennaKnee();
             popMatrix();
             pushMatrix(); // antenna Arm
-                multTranslation([0.39 * SCALE, 0* SCALE, 0.00 * SCALE]);
+                multTranslation([0.39 * SCALE, 0, 0]);
                 multRotationZ(90);
                 multScale([0.04* SCALE, 0.7 * SCALE, 0.04* SCALE]);
                 antennaArm();
             popMatrix();
             pushMatrix(); //antenna center
-                multTranslation([0.7 * SCALE, 0.03* SCALE, 0 * SCALE]);
+                multTranslation([0.7 * SCALE, 0.03* SCALE, 0]);
                 multRotationY(90);
                 multScale([0.04* SCALE, 0.1 * SCALE, 0.04* SCALE]);
                 antennaCenter();
             popMatrix(); // antenna dish
-                multTranslation([0.7 * SCALE, 0.01* SCALE, 0 * SCALE]);
+                multTranslation([0.7 * SCALE, 0.01* SCALE, 0]);
                 multScale([0.5 *SCALE, 0.5* SCALE, 0.5*SCALE]);
                 antennaDish();
         popMatrix();
 
     pushMatrix(); // front axis
-        multTranslation([0.6 * SCALE, -0.5 * SCALE, 0 * SCALE]);
+        multTranslation([0.6 * SCALE, -0.5 * SCALE, 0]);
     pushMatrix();
         axis();
     popMatrix();
     pushMatrix(); // front left wheel
-        multTranslation([0 * SCALE,0 * SCALE,-0.6 * SCALE]);
+        multTranslation([0,0,-0.6 * SCALE]);
         multRotationX(90);
         multRotationZ(-turn);
         multScale([0.3 * SCALE,0.3 * SCALE,0.3 * SCALE]);
         wheel();
     popMatrix(); // front right wheel
-        multTranslation([0 * SCALE,0 * SCALE,0.6 * SCALE]);
+        multTranslation([0,0,0.6 * SCALE]);
         multRotationX(90);
         multRotationZ(-turn); // turns wheel it seems
         multScale([0.3 * SCALE,0.3 * SCALE,0.3 * SCALE]);
@@ -365,24 +357,24 @@ function sceneBuilder(){
     popMatrix();
 
     pushMatrix(); //rear axis
-        multTranslation([-0.6 * SCALE, -0.5 * SCALE, 0 * SCALE]);
+        multTranslation([-0.6 * SCALE, -0.5 * SCALE, 0]);
     pushMatrix();
         axis();
     popMatrix();
     pushMatrix(); //rear right wheel
-        multTranslation([0 * SCALE,0 * SCALE,0.6 * SCALE]);
+        multTranslation([0,0,0.6 * SCALE]);
         multRotationX(90);
         multScale([0.3 * SCALE,0.3 * SCALE,0.3 * SCALE]);
         wheel();
     popMatrix();//rear left wheel
-        multTranslation([0 * SCALE,0 * SCALE,-0.6 * SCALE]);
+        multTranslation([0,0,-0.6 * SCALE]);
         multRotationX(90);
         multScale([0.3 * SCALE,0.3 * SCALE,0.3 * SCALE]);
         wheel();
 }
 
 function move(){
-    if(0 != Math.abs(speed) && Math.abs(speed) < SPEED_STEP)
+    if(0.0 !== Math.abs(speed) && Math.abs(speed) < SPEED_STEP)
         speed = 0;
     desloc += speed;
     spin -= ((speed * SCALE) / (torus_RADIUS * SCALE * 0.3)) * SCALE;
@@ -399,6 +391,5 @@ function render()
     gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
     move();
     sceneBuilder();
-
    requestAnimationFrame(render);
 }
