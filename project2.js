@@ -236,33 +236,23 @@ function turnWheel(angle) {
 }
 
 function frontLeftWheel(){
-    multTranslation([0 * SCALE,0 * SCALE,-0.6 * SCALE]);
-    multRotationX(90);
-    multRotationZ(-turn); // turns wheel it seems
-    multScale([0.3 * SCALE,0.3 * SCALE,0.3 * SCALE]); // torus_Radius * scale
+    // torus_Radius * scale
     wheel();
 }
 
 function frontRightWheel(){
-    multTranslation([0 * SCALE,0 * SCALE,0.6 * SCALE]);
-    multRotationX(90);
-    multRotationZ(-turn); // turns wheel it seems
-    multScale([0.3 * SCALE,0.3 * SCALE,0.3 * SCALE]);
+
     wheel();
 }
 
 
 function rearRightWheel(){
-    multTranslation([0 * SCALE,0 * SCALE,0.6 * SCALE]);
-    multRotationX(90);
-    multScale([0.3 * SCALE,0.3 * SCALE,0.3 * SCALE]);
+
     wheel();
 }
 
 function rearLeftWheel(){
-    multTranslation([0 * SCALE,0 * SCALE,-0.6 * SCALE]);
-    multRotationX(90);
-    multScale([0.3 * SCALE,0.3 * SCALE,0.3 * SCALE]); // torus_Radius * scale
+     // torus_Radius * scale
     wheel();
 }
 
@@ -275,7 +265,7 @@ function wheel(){
 }
 
 function antennaBase(){
-
+    multTranslation([0 * SCALE, 0.55 *SCALE, 0*SCALE]);
     multRotationY(90);
    // multRotationZ(90);
     multScale([1/15 * SCALE, 0.10 * SCALE, 1/15 * SCALE]);
@@ -348,7 +338,7 @@ function decreaseSpeed(){
 
 function sceneBuilder(){
     makeFloor();
-    multTranslation([(-1.0+ desloc) * SCALE  ,.71 * SCALE,(1.0 ) * SCALE]); // ALIGNING OVERALL SCENE
+    multTranslation([(-1.0+ desloc) * SCALE  ,0.71 * SCALE,(1.0 ) * SCALE]); // ALIGNING OVERALL SCENE
     pushMatrix();
       mainBodyPiece();
     popMatrix();
@@ -356,11 +346,12 @@ function sceneBuilder(){
         cabin();
     popMatrix();
     pushMatrix();
-        multTranslation([0 * SCALE, 0.55 *SCALE, 0*SCALE]);
+        //multTranslation([0 * SCALE, 0.55 *SCALE, 0*SCALE]);
             antennaBase();
     popMatrix();//
+
         pushMatrix();
-        multTranslation([0*SCALE, (0.555 + 0.08) *SCALE, 0 *SCALE]);
+        multTranslation([0*SCALE, 0.635 * SCALE, 0 *SCALE]);
         multRotationY(armTurn); //MOVE ARM SIDEWAYS
         multRotationZ(armUp);
             pushMatrix();
@@ -369,33 +360,49 @@ function sceneBuilder(){
             pushMatrix();
                 antennaArm();
             popMatrix();
-             pushMatrix();
+             //pushMatrix();
                 antennaDish();
-             popMatrix();
+             //popMatrix();
         popMatrix();
-    pushMatrix();
+
+    pushMatrix(); // front axis
         multTranslation([0.6 * SCALE, -0.5 * SCALE, 0 * SCALE]);
     pushMatrix();
         axis();
     popMatrix();
-    pushMatrix();
-        frontLeftWheel();
+    pushMatrix(); // front left wheel
+        multTranslation([0 * SCALE,0 * SCALE,-0.6 * SCALE]);
+        multRotationX(90);
+        multRotationZ(-turn);
+        multScale([0.3 * SCALE,0.3 * SCALE,0.3 * SCALE]);
+        wheel();
+    popMatrix(); // front right wheel
+        multTranslation([0 * SCALE,0 * SCALE,0.6 * SCALE]);
+        multRotationX(90);
+        multRotationZ(-turn); // turns wheel it seems
+        multScale([0.3 * SCALE,0.3 * SCALE,0.3 * SCALE]);
+    //pushMatrix();
+        wheel();
+   // popMatrix();
     popMatrix();
-    pushMatrix();
-        frontRightWheel();
-    popMatrix();
-    popMatrix();
-    pushMatrix();
+
+    pushMatrix(); //rear axis
         multTranslation([-0.6 * SCALE, -0.5 * SCALE, 0 * SCALE]);
     pushMatrix();
-        axis(); //rear actualkly
+        axis();
     popMatrix();
-    pushMatrix();
-        rearRightWheel()
-    popMatrix();
-    pushMatrix();
-        rearLeftWheel();
-    popMatrix();
+    pushMatrix(); //rear right wheel
+        multTranslation([0 * SCALE,0 * SCALE,0.6 * SCALE]);
+        multRotationX(90);
+        multScale([0.3 * SCALE,0.3 * SCALE,0.3 * SCALE]);
+        wheel();
+    popMatrix();//rear left wheel
+   // pushMatrix();
+        multTranslation([0 * SCALE,0 * SCALE,-0.6 * SCALE]);
+        multRotationX(90);
+        multScale([0.3 * SCALE,0.3 * SCALE,0.3 * SCALE]);
+        wheel();
+    //popMatrix();
 }
 
 function move(){
