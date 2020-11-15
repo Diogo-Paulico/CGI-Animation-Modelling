@@ -291,37 +291,40 @@ function decreaseSpeed(){
         turn =0;
     speed -= speed > -MAX_REVERSE_SPEED ? SPEED_STEP : 0;
 }
-
-function sceneBuilder(){
-    makeFloor();
-    multTranslation([(-1.0+ desloc) * SCALE  ,0.71 * SCALE,(1.0 ) * SCALE]);
+function  buildBody(){
     pushMatrix();
-      mainBodyPiece();
+        mainBodyPiece();
     popMatrix();
     pushMatrix();
         cabin();
     popMatrix();
-    pushMatrix();
+}
+
+function sceneBuilder(){
+    makeFloor();
+    multTranslation([(-1.0+ desloc) * SCALE  ,0.71 * SCALE,(1.0 ) * SCALE]);
+    buildBody();
+    pushMatrix(); // antenna base
         multTranslation([0 * SCALE, 0.55 *SCALE, 0*SCALE]);
         multRotationY(90);
         multScale([1/15 * SCALE, 0.10 * SCALE, 1/15 * SCALE]);
         antennaBase();
-    popMatrix();//
+    popMatrix();
 
         pushMatrix();
         multTranslation([0*SCALE, 0.635 * SCALE, 0 *SCALE]);
         multRotationY(armTurn);
         multRotationZ(armUp);
-            pushMatrix();
+            pushMatrix(); // antena Knee
                 multScale([0.08* SCALE, 0.08 * SCALE, 0.08* SCALE]);
                 antennaKnee();
             popMatrix();
-            pushMatrix();
+            pushMatrix(); // antenna Arm
                 multTranslation([0.39 * SCALE, 0* SCALE, 0.00 * SCALE]);
                 multRotationZ(90);
                 multScale([0.04* SCALE, 0.7 * SCALE, 0.04* SCALE]);
                 antennaArm();
-            popMatrix();
+            popMatrix(); // antenna dish
                 multTranslation([0.75 * SCALE, 0* SCALE, 0 * SCALE]);
                 multScale([0.5 *SCALE, 0.5* SCALE, 0.5*SCALE]);
                 antennaDish();
