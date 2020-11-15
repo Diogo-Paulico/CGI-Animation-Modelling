@@ -334,13 +334,12 @@ function sceneBuilder(){
                 multScale([0.04* SCALE, 0.7 * SCALE, 0.04* SCALE]);
                 antennaArm();
             popMatrix();
-            pushMatrix();
+            pushMatrix(); //antenna center
                 multTranslation([0.7 * SCALE, 0.03* SCALE, 0 * SCALE]);
                 multRotationY(90);
                 multScale([0.04* SCALE, 0.1 * SCALE, 0.04* SCALE]);
                 antennaCenter();
-            popMatrix();
-            // antenna dish
+            popMatrix(); // antenna dish
                 multTranslation([0.7 * SCALE, 0.01* SCALE, 0 * SCALE]);
                 multScale([0.5 *SCALE, 0.5* SCALE, 0.5*SCALE]);
                 antennaDish();
