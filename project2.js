@@ -50,7 +50,7 @@ const SPEED_STEP = 0.0005;
 const MAX_FORWARD_SPEED = 0.5;
 const MAX_REVERSE_SPEED = 0.2;
 
-const SCALAR = 212.0;
+const SCALE = 212.0;
 
 const FLOOR = (11/650) * VP_DISTANCE;
 
@@ -113,7 +113,7 @@ function changeViewMode(key) {
 
 
 window.onkeypress = function(event){
-    var key = String.fromCharCode(event.keyCode);
+    let key = String.fromCharCode(event.keyCode);
     switch (key.toLocaleLowerCase()){
         case ' ':
             changeColorMode();
@@ -187,9 +187,9 @@ function makeFloor(){
         for(let j = 0; j < FLOOR; j += 1) {
             if((j %2 == 1 && i%2 == 0 )|| (j %2 == 0 && i%2 == 1 )) {
                 pushMatrix();
-                multTranslation([1.5*SCALAR * (i - (FLOOR /2)), 0, 1.5*SCALAR * (j - (FLOOR /2) )]);
+                multTranslation([1.5*SCALE * (i - (FLOOR /2)), 0, 1.5*SCALE * (j - (FLOOR /2) )]);
                 multRotationX(90);
-                multScale([1.5*SCALAR, 1.5*SCALAR, 0]);
+                multScale([1.5*SCALE, 1.5*SCALE, 0]);
                 gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
                 gl.uniform4fv(colorLoc, flatten(WHITE));
 
@@ -202,7 +202,7 @@ function makeFloor(){
 }
 
 function mainBodyPiece() {
-   	  multScale([2 * SCALAR, 1 * SCALAR, 1 * SCALAR]);
+   	  multScale([2 * SCALE, 1 * SCALE, 1 * SCALE]);
    	  gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
    	  gl.uniform4fv(colorLoc, flatten(PURPLE));
 
@@ -211,8 +211,8 @@ function mainBodyPiece() {
 
 function cabin()
 {
-    multTranslation([1.35 * SCALAR,-0.15 * SCALAR,0.0 * SCALAR]);
-    multScale([0.7 * SCALAR, 0.7 * SCALAR,1.0 * SCALAR]);
+    multTranslation([1.35 * SCALE,-0.15 * SCALE,0.0 * SCALE]);
+    multScale([0.7 * SCALE, 0.7 * SCALE,1.0 * SCALE]);
     gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
     gl.uniform4fv(colorLoc, flatten(RED));
 
@@ -223,7 +223,7 @@ function axis(){
 
     multRotationY(90);
     multRotationZ(90);
-    multScale([1/15 * SCALAR, 1.15 * SCALAR, 1/15 * SCALAR]);
+    multScale([1/15 * SCALE, 1.15 * SCALE, 1/15 * SCALE]);
     gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
     gl.uniform4fv(colorLoc, flatten(GREEN));
 
@@ -236,33 +236,33 @@ function turnWheel(angle) {
 }
 
 function frontLeftWheel(){
-    multTranslation([0 * SCALAR,0 * SCALAR,-0.6 * SCALAR]);
+    multTranslation([0 * SCALE,0 * SCALE,-0.6 * SCALE]);
     multRotationX(90);
     multRotationZ(-turn); // turns wheel it seems
-    multScale([0.3 * SCALAR,0.3 * SCALAR,0.3 * SCALAR]); // torus_Radius * scale
+    multScale([0.3 * SCALE,0.3 * SCALE,0.3 * SCALE]); // torus_Radius * scale
     wheel();
 }
 
 function frontRightWheel(){
-    multTranslation([0 * SCALAR,0 * SCALAR,0.6 * SCALAR]);
+    multTranslation([0 * SCALE,0 * SCALE,0.6 * SCALE]);
     multRotationX(90);
     multRotationZ(-turn); // turns wheel it seems
-    multScale([0.3 * SCALAR,0.3 * SCALAR,0.3 * SCALAR]);
+    multScale([0.3 * SCALE,0.3 * SCALE,0.3 * SCALE]);
     wheel();
 }
 
 
 function rearRightWheel(){
-    multTranslation([0 * SCALAR,0 * SCALAR,0.6 * SCALAR]);
+    multTranslation([0 * SCALE,0 * SCALE,0.6 * SCALE]);
     multRotationX(90);
-    multScale([0.3 * SCALAR,0.3 * SCALAR,0.3 * SCALAR]);
+    multScale([0.3 * SCALE,0.3 * SCALE,0.3 * SCALE]);
     wheel();
 }
 
 function rearLeftWheel(){
-    multTranslation([0 * SCALAR,0 * SCALAR,-0.6 * SCALAR]);
+    multTranslation([0 * SCALE,0 * SCALE,-0.6 * SCALE]);
     multRotationX(90);
-    multScale([0.3 * SCALAR,0.3 * SCALAR,0.3 * SCALAR]); // torus_Radius * scale
+    multScale([0.3 * SCALE,0.3 * SCALE,0.3 * SCALE]); // torus_Radius * scale
     wheel();
 }
 
@@ -278,7 +278,7 @@ function antennaBase(){
 
     multRotationY(90);
    // multRotationZ(90);
-    multScale([1/15 * SCALAR, 0.10 * SCALAR, 1/15 * SCALAR]);
+    multScale([1/15 * SCALE, 0.10 * SCALE, 1/15 * SCALE]);
     gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
     gl.uniform4fv(colorLoc, flatten(GREEN));
 
@@ -287,9 +287,9 @@ function antennaBase(){
 
 function antennaArm(){
 
-    multTranslation([0.39 * SCALAR, 0* SCALAR, 0.00 * SCALAR]);
+    multTranslation([0.39 * SCALE, 0* SCALE, 0.00 * SCALE]);
     multRotationZ(90);
-    multScale([0.04* SCALAR, 0.7 * SCALAR, 0.04* SCALAR]);
+    multScale([0.04* SCALE, 0.7 * SCALE, 0.04* SCALE]);
     gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
     gl.uniform4fv(colorLoc, flatten(RED));
 
@@ -297,7 +297,7 @@ function antennaArm(){
 }
 
 function antennaKnee(){
-    multScale([0.08* SCALAR, 0.08 * SCALAR, 0.08* SCALAR]);
+    multScale([0.08* SCALE, 0.08 * SCALE, 0.08* SCALE]);
     gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
     gl.uniform4fv(colorLoc, flatten(WHITE));
 
@@ -306,8 +306,8 @@ function antennaKnee(){
 }
 
 function antennaDish(){
-    multTranslation([0.75 * SCALAR, 0* SCALAR, 0 * SCALAR]);
-    multScale([0.5 *SCALAR, 0.5* SCALAR, 0.5*SCALAR]);
+    multTranslation([0.75 * SCALE, 0* SCALE, 0 * SCALE]);
+    multScale([0.5 *SCALE, 0.5* SCALE, 0.5*SCALE]);
     gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
     gl.uniform4fv(colorLoc, flatten(WHITE));
 
@@ -348,7 +348,7 @@ function decreaseSpeed(){
 
 function sceneBuilder(){
     makeFloor();
-    multTranslation([(-1.0+ desloc) * SCALAR  ,.71 * SCALAR,(1.0 ) * SCALAR]); // ALIGNING OVERALL SCENE
+    multTranslation([(-1.0+ desloc) * SCALE  ,.71 * SCALE,(1.0 ) * SCALE]); // ALIGNING OVERALL SCENE
     pushMatrix();
       mainBodyPiece();
     popMatrix();
@@ -356,11 +356,11 @@ function sceneBuilder(){
         cabin();
     popMatrix();
     pushMatrix();
-        multTranslation([0 * SCALAR, 0.55 *SCALAR, 0*SCALAR]);
+        multTranslation([0 * SCALE, 0.55 *SCALE, 0*SCALE]);
             antennaBase();
     popMatrix();//
         pushMatrix();
-        multTranslation([0*SCALAR, (0.555 + 0.08) *SCALAR, 0 *SCALAR]);
+        multTranslation([0*SCALE, (0.555 + 0.08) *SCALE, 0 *SCALE]);
         multRotationY(armTurn); //MOVE ARM SIDEWAYS
         multRotationZ(armUp);
             pushMatrix();
@@ -374,7 +374,7 @@ function sceneBuilder(){
              popMatrix();
         popMatrix();
     pushMatrix();
-        multTranslation([0.6 * SCALAR, -0.5 * SCALAR, 0 * SCALAR]);
+        multTranslation([0.6 * SCALE, -0.5 * SCALE, 0 * SCALE]);
     pushMatrix();
         axis();
     popMatrix();
@@ -386,7 +386,7 @@ function sceneBuilder(){
     popMatrix();
     popMatrix();
     pushMatrix();
-        multTranslation([-0.6 * SCALAR, -0.5 * SCALAR, 0 * SCALAR]);
+        multTranslation([-0.6 * SCALE, -0.5 * SCALE, 0 * SCALE]);
     pushMatrix();
         axis(); //rear actualkly
     popMatrix();
@@ -402,7 +402,7 @@ function move(){
     if(0 != Math.abs(speed) && Math.abs(speed) < SPEED_STEP)
     speed = 0;
     desloc += speed;
-    spin -= ((speed * SCALAR) / (torus_RADIUS * SCALAR * 0.3)) * SCALAR;
+    spin -= ((speed * SCALE) / (torus_RADIUS * SCALE * 0.3)) * SCALE;
     spin = spin % 360;
 }
 

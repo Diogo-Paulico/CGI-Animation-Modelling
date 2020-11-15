@@ -32,7 +32,7 @@ function paraboloidBuild(nlat, nlon)
     var north = vec3(0,0,0);
     paraboloid_points.push(north);
     paraboloid_normals.push(vec3(0,1,0));
-    //var pt = vec3(r*Math.cos(phi)*Math.cos(theta), r*Math.sin(phi)*Math.sin(phi)  ,r*Math.cos(phi)*  Math.sin(theta));
+    
     // Generate middle
             let x;
             let z;
@@ -48,12 +48,7 @@ function paraboloidBuild(nlat, nlon)
             paraboloid_normals.push(normalize(n));
         }
     }
-    /*
-    // Generate south cap
-    var south = vec3(0,-r,0);
-    paraboloid_points.push(south);
-    paraboloid_normals.push(vec3(0,-1,0));
-    */
+    
     // Generate the faces
     
     // north pole faces
@@ -91,19 +86,7 @@ function paraboloidBuild(nlat, nlon)
         paraboloid_faces.push(p+1);
     }
     
-    /*
-    // south pole faces
-    var offset = 1 + (nlat-1) * nlon;
     
-    for(var j=0; j<nlon-1; j++) {
-        paraboloid_faces.push(offset+nlon);
-        paraboloid_faces.push(offset+j);
-        paraboloid_faces.push(offset+j+1);
-    }
-    
-    paraboloid_faces.push(offset+nlon);
-    paraboloid_faces.push(offset+nlon-1);
-    paraboloid_faces.push(offset); */
     
     // Build the edges
     
