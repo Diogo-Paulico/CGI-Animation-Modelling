@@ -36,6 +36,9 @@ const RED = vec4(1.0,0.0,0.0, 1.0);
 const GREEN = vec4(0.0, 1.0, 0.0, 1.0);
 const BLUE = vec4(0.0, 0.0, 1.0, 1.0);
 const WHITE = vec4(1.0, 1.0, 1.0, 1.0);
+const ORANGE = vec4(1.0, 0.6, 0.2, 1.0);
+const DIRTY_GREEN = vec4(0.8, 0.8, 0.3, 1.0);
+const BRIGHT_YELLOW = vec4(1.0, 0.1, 0.8, 1.0);
 
 //views
 const CUSTOM_VIEW = lookAt(eye, at, up)
@@ -176,7 +179,7 @@ window.onload = function() {
     sphereInit(gl);
     paraboloidInit(gl);
 
-    currentView = CUSTOM_VIEW;
+    currentView = SIDE_VIEW;
     render();
 }
 
@@ -190,7 +193,7 @@ function makeFloor(){
                 multRotationX(90);
                 multScale([1.5*SCALE, 1.5*SCALE, 0]);
                 gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
-                gl.uniform4fv(colorLoc, flatten(WHITE));
+                gl.uniform4fv(colorLoc, flatten(DIRTY_GREEN));
 
                 cubeDrawWireFrame(gl, program);
 
@@ -246,7 +249,7 @@ function antennaBase(){
 
 function antennaArm(){
     gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
-    gl.uniform4fv(colorLoc, flatten(RED));
+    gl.uniform4fv(colorLoc, flatten(BRIGHT_YELLOW));
         cylinderDrawWireFrame(gl,program);
 }
 
@@ -256,9 +259,15 @@ function antennaKnee(){
         sphereDrawWireFrame(gl,program);
 }
 
-function antennaDish(){
+function antennaCenter(){
     gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
     gl.uniform4fv(colorLoc, flatten(WHITE));
+        cylinderDrawWireFrame(gl,program);
+}
+
+function antennaDish(){
+    gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
+    gl.uniform4fv(colorLoc, flatten(ORANGE));
         paraboloidDrawWireFrame(gl,program);
 }
 
@@ -324,8 +333,15 @@ function sceneBuilder(){
                 multRotationZ(90);
                 multScale([0.04* SCALE, 0.7 * SCALE, 0.04* SCALE]);
                 antennaArm();
-            popMatrix(); // antenna dish
-                multTranslation([0.75 * SCALE, 0* SCALE, 0 * SCALE]);
+            popMatrix();
+            pushMatrix();
+                multTranslation([0.7 * SCALE, 0.03* SCALE, 0 * SCALE]);
+                multRotationY(90);
+                multScale([0.04* SCALE, 0.1 * SCALE, 0.04* SCALE]);
+                antennaCenter();
+            popMatrix();
+            // antenna dish
+                multTranslation([0.7 * SCALE, 0.01* SCALE, 0 * SCALE]);
                 multScale([0.5 *SCALE, 0.5* SCALE, 0.5*SCALE]);
                 antennaDish();
         popMatrix();
@@ -368,7 +384,7 @@ function sceneBuilder(){
 
 function move(){
     if(0 != Math.abs(speed) && Math.abs(speed) < SPEED_STEP)
-    speed = 0;
+        speed = 0;
     desloc += speed;
     spin -= ((speed * SCALE) / (torus_RADIUS * SCALE * 0.3)) * SCALE;
     spin = spin % 360;
@@ -384,5 +400,6 @@ function render()
     gl.uniformMatrix4fv(mModelViewLoc, false, flatten(modelView));
     move();
     sceneBuilder();
+
    requestAnimationFrame(render);
 }
