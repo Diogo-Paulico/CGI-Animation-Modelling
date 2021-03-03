@@ -22,4 +22,4 @@
 ## Authors
 
 * **Diogo Paulico** - *Initial work*
-* **Daniel João** - Initial Work
+* **Daniel João** - *Initial Work*
