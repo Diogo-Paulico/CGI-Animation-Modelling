@@ -1,4 +1,4 @@
-# GCI WebGL animation and modelling project
+# CGI WebGL animation and modelling project
 
 ![image](van.png)
 
